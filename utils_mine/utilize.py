@@ -68,7 +68,18 @@ def cauc_transformationMatrix(rotationMatrix,posVector):
     tmp = np.array([0,0,0,1])
     res = np.concatenate([res,tmp[None,...]],axis = 0)
     return res
+def cauc_campos_cam2cam(transMatrix1,transMatrix2):#1->2
+    print(transMatrix1)
+    rot1 = transMatrix1[:3,:3]
+    posvec1 = transMatrix1[:3,3]
+    inv_rot1 =  np.array(np.matrix(rot1).T)
+    inv_posvec1 = -inv_rot1@posvec1
+    inv_transMatrix1 = np.concatenate([inv_rot1,inv_posvec1[...,None]],axis = -1)
+    tmp = np.array([0,0,0,1])
+    inv_transMatrix1 = np.concatenate([inv_transMatrix1,tmp[None,...]],axis = 0)
+    return transMatrix2@inv_transMatrix1
 if __name__=='__main__':
     pass
-    # R = cauc_transformationMatrix(75,45,0)
-    # print(R)
+    # path1 = '/home/slam/devdata/pointnerf/data_src/scannet/scans/scene0113_0001/exported'
+    # path2 = '/home/slam/devdata/pointnerf/data_src/scannet/scans/scene0113_01/exported'
+    # merge_dataset(path1,path2)

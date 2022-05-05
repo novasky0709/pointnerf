@@ -312,15 +312,15 @@ class ScannetFtDataset(BaseDataset):
                 self.test_id_list = self.all_id_list[::100]#每隔100做一个测试
                 self.train_id_list = [self.all_id_list[i] for i in range(len(self.all_id_list)) if (((i % 100) > 19) and ((i % 100) < 81 or (i//100+1)*100>=len(self.all_id_list)))]#中间60张做训练
             else:  # nsvf configuration->go this way in defalut train scannet
-                step=5
+                step=1#5
                 self.train_id_list = self.all_id_list[::step]
                 self.test_id_list = [self.all_id_list[i] for i in range(len(self.all_id_list)) if (i % step) !=0] if self.opt.test_num_step != 1 else self.all_id_list
         else:
-            assert self.split == "test", 'split==train! error!cant train at new camera trajectory'
+            #assert self.split == "test", 'split==train! error!cant train at new camera trajectory'
             print("Novel camera trajectory rendering")
             # self.test_id_list = self.all_id_list[::10]
             # self.train_id_list = []
-            self.test_id_list = self.all_id_list[1850:3260][::2]
+            self.test_id_list = self.all_id_list[300:600][::1]
             self.train_id_list = []
         print("all_id_list",len(self.all_id_list))
         print("test_id_list",len(self.test_id_list), self.test_id_list)

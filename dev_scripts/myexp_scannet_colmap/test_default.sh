@@ -1,10 +1,10 @@
 #!/bin/bash
-
+novel_cam_trajectory="1"
 nrCheckpoint="../checkpoints"
 nrDataRoot="../data_src"
-name='00-t'
+name='15-scene0113-rotationinvariance_denseview_edit'
 
-resume_iter=200000 # 20000 #latest
+resume_iter=latest # 20000 #latest
 data_root="${nrDataRoot}/scannet/scans/"
 scan="scene0113_00"
 normview=0
@@ -51,8 +51,8 @@ apply_pnt_mask=1
 shading_feature_mlp_layer0=1 #2
 shading_feature_mlp_layer1=2 #2
 shading_feature_mlp_layer2=0 #1
-shading_feature_mlp_layer3=0 #1
-shading_feature_mlp_layer4=1 #1
+shading_feature_mlp_layer3=1 #1
+shading_feature_mlp_layer4=0 #1
 shading_alpha_mlp_layer=1
 shading_color_mlp_layer=4
 shading_feature_num=256
@@ -95,7 +95,7 @@ gpu_ids='0'
 checkpoints_dir="${nrCheckpoint}/scannet/"
 resume_dir="${nrCheckpoint}/init/dtu_dgt_d012_img0123_conf_agg2_32_dirclr20"
 
-test_num_step=1
+test_num_step=10
 visual_items='coarse_raycolor gt_image '
 color_loss_weights=" 1.0 0.0 0.0 "
 color_loss_items='ray_masked_coarse_raycolor ray_miss_coarse_raycolor coarse_raycolor'
@@ -183,4 +183,5 @@ python3 test_ft.py \
         --z_depth_dim $z_depth_dim \
         --max_o $max_o \
         --query_size $query_size \
-        --debug
+        --debug \
+        --novel_cam_trajectory $novel_cam_trajectory

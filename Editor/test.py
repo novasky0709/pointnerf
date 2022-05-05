@@ -24,7 +24,7 @@ class Options:
         parser = argparse.ArgumentParser(description="Argparse of  point_editor")
         parser.add_argument('--checkpoints_root',
                             type=str,
-                            default='/home/slam/devdata/pointnerf/checkpoints/scannet/13-scene0113-rotationinvariance',#/home/slam/devdata/pointnerf/checkpoints/scannet/scene000-T
+                            default='/home/slam/devdata/pointnerf/checkpoints/scannet/14-scene0113-rotationinvariance_denseview',#/home/slam/devdata/pointnerf/checkpoints/scannet/scene000-T
                             help='root of checkpoints datasets')
         parser.add_argument('--gpu_ids',
                             type=str,
@@ -44,7 +44,7 @@ def main():
     # '''
     # cpc = CheckpointsController(opt)
     # neural_pcd = cpc.load_checkpoints_as_nerualpcd()
-    # neural_pcd.save_as_ply('origin_scene')
+    # neural_pcd.save_as_ply('scene_origin')
     # '''
     # 测试读ply:这一步中间，用mesh手抠一个物体，命名为sofa_meshlabpcd.ply~！~！~！~！~！~！~！~！
     # '''
@@ -60,29 +60,34 @@ def main():
     '''
     测试editor crop方法
     '''
-    # scene_npcd = Neural_pointcloud(opt)
-    # scene_npcd.load_from_ply('scene_origin')
-    # object_npcd = Neural_pointcloud(opt)
-    # object_npcd.load_from_ply('sofa1')
-    # pce = PointCloudEditor(opt)
-    # npcd_cropped = pce.crop_point_cloud(object_npcd,scene_npcd)
-    # npcd_cropped.save_as_ply('nosofa1_scene')
+    scene_npcd = Neural_pointcloud(opt)
+    scene_npcd.load_from_ply('scene_origin')
+    object_npcd = Neural_pointcloud(opt)
+    object_npcd.load_from_ply('sofa1')
+    pce = PointCloudEditor(opt)
+    npcd_cropped = pce.crop_point_cloud(object_npcd,scene_npcd)
+    npcd_cropped.save_as_ply('nosofa1_scene')
 
-    '''
-    测试将neural point cloud 写回 checkpoints
-    '''
+    # '''
+    # 测试将neural point cloud 写回 checkpoints
+    # '''
     sofa_npcd = Neural_pointcloud(opt)
     sofa_npcd.load_from_ply('sofa1')#'nosofa'
-    scene_npcd = Neural_pointcloud(opt)
-    scene_npcd.load_from_ply('nosofa1_scene')  # 'nosofa'
     pce = PointCloudEditor(opt)
-    for deg in (range(360)):
-        transMatrix = cauc_transformationMatrix(cauc_RotationMatrix(0,0,deg),[0,0,0])
-        transed_sofa = pce.translation_point_cloud_local(sofa_npcd,transMatrix)
-        new_scene = pce.add_point_cloud(transed_sofa,scene_npcd)
-        new_scene.save_as_ply('sofa_trans_scene'+str(deg))
-        cpc = CheckpointsController(opt)
-        cpc.save_checkpoints_from_neuralpcd(new_scene,'sofa-trans'+str(deg))
+    transed_sofa = pce.translation_point_cloud_local(sofa_npcd,cauc_transformationMatrix(cauc_RotationMatrix(0,0,15),[0,0.25,0]))
+    transed_sofa.save_as_ply("sofa1_(0,0,15)(0,0.25,0)")
+    new_scene = pce.add_point_cloud(transed_sofa, npcd_cropped)
+    new_scene.save_as_ply('scene_sofa1trans(0,0,15)(0,0.25,0)' )
+    cpc = CheckpointsController(opt)
+    cpc.save_checkpoints_from_neuralpcd(new_scene, 'scene_sofa1trans(0,0,15)(0,0.25,0)' )
+    #
+    # for deg in (range(360)):
+    #     transMatrix = cauc_transformationMatrix(cauc_RotationMatrix(0,0,deg),[0,0,0])
+    #     transed_sofa = pce.translation_point_cloud_local(sofa_npcd,transMatrix)
+    #     new_scene = pce.add_point_cloud(transed_sofa,scene_npcd)
+    #     new_scene.save_as_ply('sofa_trans_scene'+str(deg))
+    #     cpc = CheckpointsController(opt)
+    #     cpc.save_checkpoints_from_neuralpcd(new_scene,'sofa-trans'+str(deg))
 if __name__=="__main__":
     main()
     print('~finish~')

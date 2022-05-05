@@ -19,11 +19,11 @@ class Options:
         self.parse()
     def parse(self):
         parser = argparse.ArgumentParser(description="Demo of argparse")
-        parser.add_argument('--data_root',type=str, default='/home/slam/devdata/pointnerf/checkpoints/scannet/scene000-edit-center_sofa_removed',help='root of rendering result(It is probably in checkpoints file)')
+        parser.add_argument('--data_root',type=str, default='/home/slam/devdata/pointnerf/checkpoints/scannet/15-scene0113-rotationinvariance_denseview_edit',help='root of rendering result(It is probably in checkpoints file)')
         parser.add_argument('--unit',type=str, default='pose',choices=['iter','pose'],help='how to generate video,iter means show the fist pic every several iters,pose mean show the latest iter every camera poss')
         #parser.add_argument('--num_iter', type=int,default=10000,help='n iter you want to generator')
         parser.add_argument('--video_format', type=str, default='gif',choices=['mp4','gif','mov'],help='video format')
-        parser.add_argument('--fps', type=int, default=20,help='frame per second of video')
+        parser.add_argument('--fps', type=int, default=5,help='frame per second of video')
 
         self.opt = parser.parse_args()
 
@@ -45,7 +45,8 @@ class VideoGenerator:
             del numlist,dirs
             self.latest_dir = os.path.join(self.data_root,'test_'+latestnum,'images')
             print('latest directory:', self.latest_dir)
-            img_path_list = [i for i in os.listdir(self.latest_dir) if i.endswith("-coarse_raycolor.png")]
+            #img_path_list = [i for i in os.listdir(self.latest_dir) if i.endswith("-coarse_raycolor.png")]
+            img_path_list = [i for i in os.listdir(self.latest_dir) if i.endswith("-gt_image.png")]
             img_path_list.sort()
             self.img_path_list = [os.path.join(self.latest_dir,img_path) for img_path in img_path_list]
         else:#unit=='iter'
